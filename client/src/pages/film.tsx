@@ -5,8 +5,6 @@ import { GET_FILM, GET_FILMS } from "../queries/film";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { CREATE_FILM, REMOVE_FILM, UPDATE_FILM } from "../mutations/film";
 import { GET_GENRES } from "../queries/genre";
-import IUpdateFilm from "../interfaces/IUpdateFilm";
-import IUpdateGenre from "../interfaces/IUpdateGenre";
 import IFilm from "../interfaces/IFilm";
 
 const FilmPage: React.FunctionComponent<IPage> = ({ name }) => {
@@ -20,7 +18,6 @@ const FilmPage: React.FunctionComponent<IPage> = ({ name }) => {
     data: genreList,
     loading: genreLoading,
     error: genreError,
-    refetch: genreRefetch,
   } = useQuery(GET_GENRES);
   const [getFilm] = useLazyQuery(GET_FILM);
   const [createFilm] = useMutation(CREATE_FILM);
@@ -52,14 +49,24 @@ const FilmPage: React.FunctionComponent<IPage> = ({ name }) => {
   }
 
   useEffect(() => {
-    logging.info(`Loading ${name}`);
     if (!filmLoading) {
       setFilms(filmList.getFilms);
     }
+    if (filmError) {
+      console.error(filmError);
+    }
+  }, [filmLoading, filmError, filmList]);
+
+  useEffect(() => {
     if (!genreLoading) {
       setGenres(genreList.getGenres);
     }
-  }, [filmLoading, filmList, genreLoading, genreList]);
+    if (genreError) {
+      console.error(genreError);
+    }
+  }, [genreLoading, genreError, genreList]);
+
+  useEffect(() => logging.info(`Loading ${name}`), [name]);
 
   function create() {
     createFilm({ variables: { input: entity } })
@@ -154,7 +161,7 @@ const FilmPage: React.FunctionComponent<IPage> = ({ name }) => {
             multiple
             className="form-control"
           >
-            {genres.map((v: IUpdateGenre, i: number) => {
+            {genres.map((v: IFilm, i: number) => {
               return (
                 <option
                   value={v.id}

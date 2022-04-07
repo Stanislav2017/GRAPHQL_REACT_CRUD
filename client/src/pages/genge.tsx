@@ -4,7 +4,7 @@ import logging from "../config/logging";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_GENRE, GET_GENRES } from "../queries/genre";
 import { CREATE_GENRE, REMOVE_GENRE, UPDATE_GENRE } from "../mutations/genre";
-import IUpdateGenre from "../interfaces/IUpdateGenre";
+import IGenre from "../interfaces/IGenre";
 
 const GenrePage: React.FunctionComponent<IPage> = ({ name }) => {
   const { data, loading, error, refetch } = useQuery(GET_GENRES);
@@ -153,7 +153,7 @@ const GenrePage: React.FunctionComponent<IPage> = ({ name }) => {
             )}
             {!error &&
               !loading &&
-              genres.map((v: IUpdateGenre, i: number) => {
+              genres.map((v: IGenre, i: number) => {
                 return (
                   <tr key={i}>
                     <th scope="row">{v.id}</th>
